@@ -1,5 +1,56 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2781642459422927452
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6764817276386664243}
+  - component: {fileID: 8699999314207016356}
+  m_Layer: 0
+  m_Name: Trail
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6764817276386664243
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2781642459422927452}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4809776778938386719}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8699999314207016356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2781642459422927452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bff4f5a8991d7fa47baed5c5ff25979f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  material: {fileID: 2100000, guid: d774423aeb96b47c4a462e525144c60f, type: 2}
+  duration: 0.3
+  corner: 1
+  loop: 0
+  points:
+  - {x: 0.4667, y: 0, z: -0.503}
+  - {x: -0.46670005, y: 0, z: -0.503}
 --- !u!1 &2804073405814071534
 GameObject:
   m_ObjectHideFlags: 0
@@ -73,6 +124,7 @@ Transform:
   - {fileID: 4017790927319571513}
   - {fileID: 2137899112950691080}
   - {fileID: 3333513599834329592}
+  - {fileID: 6764817276386664243}
   m_Father: {fileID: 5295580045736297724}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6267870848057597636
@@ -330,7 +382,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 947109971fa424e6db54bf9d4d3f2b45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _numberType: 2
+  _config: {fileID: 0}
   _spawnFeedbacks: {fileID: 2922066744077275702}
   _collideFeedbacks: {fileID: 979666246016543852}
   _mergeFeedbacks: {fileID: 6350666573543364986}

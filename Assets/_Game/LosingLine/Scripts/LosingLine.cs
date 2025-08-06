@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SoloGames.Gameplay
 {
-    public class EndLine : MonoBehaviour
+    public class LosingLine : MonoBehaviour
     {
         private GameplayManager _gameplayManager => GameplayManager.Instance;
 
