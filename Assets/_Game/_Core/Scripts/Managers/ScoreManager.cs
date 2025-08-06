@@ -1,22 +1,28 @@
 using System;
-using SoloGames.Patterns;
+using MoreMountains.Tools;
 
 namespace SoloGames.Managers
 {
-    public class ScoreManager : MonoSingleton<ScoreManager>
+    public class ScoreManager : MMSingleton<ScoreManager>
     {
         public static event Action<int> OnScoreUpdated;
 
         protected int _score;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            Reset();
+        }
 
         public int GetCount()
         {
             return _score;
         }
 
-        public void Add(int amount)
+        public void Add(int value)
         {
-            _score += amount;
+            _score += CalculateScores(value);
             OnScoreUpdated?.Invoke(_score);
         }
 
@@ -24,6 +30,17 @@ namespace SoloGames.Managers
         {
             _score -= amount;
             OnScoreUpdated?.Invoke(_score);
+        }
+
+        public void Reset()
+        {
+            _score = 0;
+            OnScoreUpdated?.Invoke(_score);
+        }
+
+        private int CalculateScores(int value)
+        {
+            return value / 2;
         }
         
     }

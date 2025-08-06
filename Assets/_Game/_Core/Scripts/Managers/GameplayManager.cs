@@ -1,15 +1,14 @@
-// using MoreMountains.Tools;
-using SoloGames.Patterns;
-using UnityEngine;
+using MoreMountains.Tools;
+
 
 namespace SoloGames.Managers
 {
-    public enum GameStates { Start, LaunchStart, LaunchStop, Flight, Finish }
+    public enum GameStates { Start, Win, Lose }
 
-    public class GameplayManager : MonoSingleton<GameplayManager>
+    public class GameplayManager : MMSingleton<GameplayManager>
     {
 
-        // public MMStateMachine<GameStates> GameState;
+        public MMStateMachine<GameStates> GameState;
 
         protected override void Awake()
         {
@@ -19,65 +18,49 @@ namespace SoloGames.Managers
 
         protected void Initialization()
         {
-            // GameState = new MMStateMachine<GameStates>(gameObject, true);
+            GameState = new MMStateMachine<GameStates>(gameObject, true);
         }
 
         protected void OnStartState()
         {
-            
+
         }
 
-        protected void OnLaunchStartState()
+        protected void OnWinState()
         {
-            
+
         }
         
-        protected void OnLaunchStopState()
+        protected void OnLoseState()
         {
             
         }
 
-        protected void OnFlightState()
+        private void OnStateChange()
         {
-            
+            switch (GameState.CurrentState)
+            {
+                case GameStates.Start:
+                    OnStartState();
+                    break;
+                case GameStates.Win:
+                    OnWinState();
+                    break;
+                case GameStates.Lose:
+                    OnLoseState();
+                    break;
+            }
         }
 
-        protected void OnFinishStateState()
+        private void OnEnable()
         {
-
+            GameState.OnStateChange += OnStateChange;
         }
 
-        // private void OnStateChange()
-        // {
-        //     switch (GameState.CurrentState)
-        //     {
-        //         case GameStates.Start:
-        //             OnStartState();
-        //             break;
-        //         case GameStates.LaunchStart:
-        //             OnLaunchStartState();
-        //             break;
-        //         case GameStates.LaunchStop:
-        //             OnLaunchStopState();
-        //             break;
-        //         case GameStates.Flight:
-        //             OnFlightState();
-        //             break;
-        //         case GameStates.Finish:
-        //             OnFinishStateState();
-        //             break;
-        //     }
-        // }
-
-        // private void OnEnable()
-        // {
-        //     GameState.OnStateChange += OnStateChange;
-        // }
-
-        // private void OnDisable()
-        // {
-        //     GameState.OnStateChange -= OnStateChange;
-        // }
+        private void OnDisable()
+        {
+            GameState.OnStateChange -= OnStateChange;
+        }
 
     }
 }

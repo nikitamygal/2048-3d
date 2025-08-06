@@ -1,8 +1,9 @@
-using SoloGames.Patterns;
+using MoreMountains.Tools;
+
 
 namespace SoloGames.Managers
 {
-    public class LevelManager : MonoSingleton<LevelManager>
+    public class LevelManager : MMSingleton<LevelManager>
     {
         protected override void Awake()
         {

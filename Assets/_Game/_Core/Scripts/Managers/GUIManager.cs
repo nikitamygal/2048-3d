@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SoloGames.Patterns;
+using MoreMountains.Tools;
 using SoloGames.UI;
 using UnityEngine;
 
@@ -14,7 +14,7 @@ namespace SoloGames.Managers
         public UIPanel Panel;
     }
 
-    public class GUIManager : MonoSingleton<GUIManager>
+    public class GUIManager : MMSingleton<GUIManager>
     {
         [SerializeField] private List<PanelItem> _panels = new List<PanelItem>();
 

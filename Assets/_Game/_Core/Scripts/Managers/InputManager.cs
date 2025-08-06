@@ -1,9 +1,9 @@
-using SoloGames.Patterns;
+using MoreMountains.Tools;
 using UnityEngine;
 
 namespace SoloGames.Managers
 {
-    public class InputManager : MonoSingleton<InputManager>
+    public class InputManager : MMSingleton<InputManager>
     {
         [SerializeField] private float _minSwipeDistance = 25f;
 
