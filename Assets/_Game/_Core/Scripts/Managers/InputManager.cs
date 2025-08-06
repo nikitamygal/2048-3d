@@ -1,3 +1,4 @@
+using System;
 using MoreMountains.Tools;
 using UnityEngine;
 
@@ -5,17 +6,36 @@ namespace SoloGames.Managers
 {
     public class InputManager : MMSingleton<InputManager>
     {
-        [SerializeField] private float _minSwipeDistance = 25f;
+        [SerializeField] private float _swipeThreshold = 25f;
 
-        public Vector3 LateralDirection => _lateralDirection;
         public bool IsSwiping => _isSwiping;
+        public static event Action<Vector2> OnSwipe;      // swipe direction (normalized)
+        public static event Action OnTap;                // simple tap/click
 
-        protected Vector3 _lateralDirection = Vector3.zero;
-        protected Vector2 _swipeStart;
+        private Vector2 _startTouchPosition;
+        private Vector2 currentTouchPosition;
         protected bool _isSwiping = false;
         protected bool _isMobileDevice = false;
-        
-        private void HandleTouchSwipe()
+
+        private void HandleMouseSwipe()
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                _isSwiping = true;
+                _startTouchPosition = Input.mousePosition;
+            }
+            else if (Input.GetMouseButton(0) && _isSwiping)
+            {
+                currentTouchPosition = Input.mousePosition;
+                DetectSwipe();
+            }
+            else if (Input.GetMouseButtonUp(0))
+            {
+                _isSwiping = false;
+            }
+        }
+
+        private void HandleTouchInput()
         {
             if (Input.touchCount == 0) return;
 
@@ -23,62 +43,40 @@ namespace SoloGames.Managers
             switch (touch.phase)
             {
                 case TouchPhase.Began:
-                    _swipeStart = touch.position;
                     _isSwiping = true;
+                    _startTouchPosition = touch.position;
+                    break;
+
+                case TouchPhase.Moved:
+                case TouchPhase.Stationary:
+                    currentTouchPosition = touch.position;
+                    DetectSwipe();
                     break;
 
                 case TouchPhase.Ended:
-                    if (!_isSwiping) return;
-
-                    Vector2 swipeEnd = touch.position;
-                    Vector2 delta = swipeEnd - _swipeStart;
-
-                    if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y) && Mathf.Abs(delta.x) > _minSwipeDistance)
-                    {
-                        if (delta.x > 0)
-                            _lateralDirection = Vector3.right;
-                        else
-                            _lateralDirection = Vector3.left;
-                    }
+                case TouchPhase.Canceled:
                     _isSwiping = false;
                     break;
             }
         }
-
-        private void HandleMouseSwipe()
+        
+        private void DetectSwipe()
         {
-            if (Input.GetMouseButtonDown(0))
+            Vector2 delta = currentTouchPosition - _startTouchPosition;
+            if (delta.magnitude >= _swipeThreshold)
             {
-                _swipeStart = Input.mousePosition;
-                _isSwiping = true;
-            }
-
-            if (Input.GetMouseButton(0) && _isSwiping)
-            {
-                Vector2 swipeEnd = (Vector2)Input.mousePosition;
-                Vector2 delta = swipeEnd - _swipeStart;
-
-                if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y) && Mathf.Abs(delta.x) > _minSwipeDistance)
-                {
-                    if (delta.x > 0)
-                        _lateralDirection = Vector3.right;
-                    else
-                        _lateralDirection = Vector3.left;
-                }
-
-                if (Input.GetMouseButtonUp(0))
-                {
-                    _isSwiping = false;
-                }
+                Vector2 direction = delta.normalized;
+                OnSwipe?.Invoke(direction);
+                _isSwiping = false; // reset swipe
             }
         }
 
         private void Update()
         {
-            if (_isMobileDevice)
-                HandleTouchSwipe();
-            else
-                HandleMouseSwipe();
+            // if (_isMobileDevice)
+            //     HandleTouchSwipe();
+            // else
+            HandleMouseSwipe();
         }
     }
 }

@@ -9,9 +9,8 @@ namespace SoloGames.Managers
 
         protected int _score;
 
-        protected override void Awake()
+        private void Start()
         {
-            base.Awake();
             Reset();
         }
 

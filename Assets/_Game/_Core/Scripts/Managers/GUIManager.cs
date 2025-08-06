@@ -18,9 +18,10 @@ namespace SoloGames.Managers
     {
         [SerializeField] private List<PanelItem> _panels = new List<PanelItem>();
 
-        public PanelItem GetPanel(UIPanelType panelType)
+        public UIPanel GetPanel(UIPanelType panelType)
         {
-            return _panels.FirstOrDefault(panel => panel.PanelType == panelType);
+            return _panels.FirstOrDefault(panel => panel.PanelType == panelType).Panel;
         }
+
     }
 }

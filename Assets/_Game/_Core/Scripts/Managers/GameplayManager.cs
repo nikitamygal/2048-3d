@@ -1,4 +1,5 @@
 using MoreMountains.Tools;
+using SoloGames.UI;
 
 
 namespace SoloGames.Managers
@@ -7,8 +8,12 @@ namespace SoloGames.Managers
 
     public class GameplayManager : MMSingleton<GameplayManager>
     {
-
         public MMStateMachine<GameStates> GameState;
+
+        protected GUIManager _guiManager => GUIManager.Instance;
+        protected UIPanel _hudPanel;
+        protected UIPanel _winPanel;
+        protected UIPanel _losePanel;
 
         protected override void Awake()
         {
@@ -19,6 +24,9 @@ namespace SoloGames.Managers
         protected void Initialization()
         {
             GameState = new MMStateMachine<GameStates>(gameObject, true);
+            _hudPanel = _guiManager.GetPanel(UIPanelType.HUD);
+            _winPanel = _guiManager.GetPanel(UIPanelType.Win);
+            _losePanel = _guiManager.GetPanel(UIPanelType.Lose);
         }
 
         protected void OnStartState()
@@ -28,12 +36,12 @@ namespace SoloGames.Managers
 
         protected void OnWinState()
         {
-
+            _winPanel?.Show();
         }
         
         protected void OnLoseState()
         {
-            
+            _losePanel?.Show();
         }
 
         private void OnStateChange()
