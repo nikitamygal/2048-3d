@@ -17,7 +17,7 @@ namespace SoloGames.Managers
         protected bool _isSwiping = false;
         protected bool _isMobileDevice = false;
 
-        private void HandleMouseSwipe()
+        private void HandleMouseInput()
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -73,10 +73,10 @@ namespace SoloGames.Managers
 
         private void Update()
         {
-            // if (_isMobileDevice)
-            //     HandleTouchSwipe();
-            // else
-            HandleMouseSwipe();
+            if (_isMobileDevice)
+                HandleTouchInput();
+            else
+                HandleMouseInput();
         }
     }
 }
