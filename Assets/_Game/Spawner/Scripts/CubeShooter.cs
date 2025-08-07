@@ -1,4 +1,5 @@
 using MoreMountains.Feedbacks;
+using SoloGames.Configs;
 using SoloGames.Managers;
 using UnityEngine;
 
@@ -6,61 +7,105 @@ namespace SoloGames.Gameplay
 {
     public class CubeShooter : MonoBehaviour
     {
-        [SerializeField] private Transform spawnPoint;    // точка появления куба
-        [SerializeField] private float moveStep = 1.5f;   // шаг влево/вправо
-        [SerializeField] private float maxX = 3f;         // ограничение по X
-        [SerializeField] private float shootForce = 10f;
+        [Header("Settings")]
+        [SerializeField] private CubeSpawnSettingsSO _cubeSpawnSettings;
+        [SerializeField] private Transform _spawnPoint;
+        [SerializeField] private float _respawnDelay = 1.0f;
+        [SerializeField] private float _moveSpeed = 50f;
+        [SerializeField] private float _maxX = 3f;
+        [SerializeField] private float _shootForce = 10f;
 
         [Header("Feedbacks")]
         [SerializeField] private MMFeedbacks _shootFeedbacks;
 
-        private void HandleSwipe(Vector2 direction)
+        protected Cube _shootingCube = null;
+        protected Vector3 _cubePosition => _shootingCube.transform.position;
+        protected GameplayManager _gameplayManager => GameplayManager.Instance;
+        protected SpawnManager _spawnManager => SpawnManager.Instance;
+
+        private void Start()
         {
-            if (direction.x > 0.5f)
-                MoveRight();
-            else if (direction.x < -0.5f)
-                MoveLeft();
-            else if (direction.y > 0.5f)
+            // Spawn new Cube on SpawningNext state
+            if (_gameplayManager?.GameState != null)
+            {
+                _gameplayManager.GameState.OnStateChange += OnGameStateChange;
+            }
+            StateSpawningNext();
+        }
+
+        private void OnInputTap(bool isUp)
+        {
+            StateShootingCube();
+            if (isUp)
+            {
                 ShootCube();
+                Invoke("StateSpawningNext", _respawnDelay);
+            }
         }
 
-        private void MoveRight()
+        private void SpawnCube()
         {
-            Vector3 pos = spawnPoint.position;
-            pos.x = Mathf.Clamp(pos.x + moveStep, -maxX, maxX);
-            spawnPoint.position = pos;
-        }
-
-        private void MoveLeft()
-        {
-            Vector3 pos = spawnPoint.position;
-            pos.x = Mathf.Clamp(pos.x - moveStep, -maxX, maxX);
-            spawnPoint.position = pos;
+            CubeItemSO randomCube = _cubeSpawnSettings.GetRandomCube();
+            _shootingCube = _spawnManager.SpawnNewCube(randomCube, _spawnPoint.position);
         }
 
         private void ShootCube()
         {
-            // Cube cube = cubePool.GetCube(currentValue);
-            // cube.transform.position = spawnPoint.position;
-            // cube.SetValue(currentValue);
+            if (_shootingCube == null) return;
 
-            // Rigidbody rb = cube.GetComponent<Rigidbody>();
-            // rb.linearVelocity = Vector3.zero;
-            // rb.angularVelocity = Vector3.zero;
-
-            // rb.AddForce(Vector3.forward * shootForce, ForceMode.Impulse);
-
+            _shootingCube.RB.AddForce(Vector3.forward * _shootForce, ForceMode.Impulse);
             _shootFeedbacks?.PlayFeedbacks();
         }
-        
+
+        #region STATES
+        private void StateShootingCube()
+        {
+            _gameplayManager.GameState.ChangeState(GameStates.ShootingCube);
+        }
+
+        private void StateSpawningNext()
+        {
+            _gameplayManager.GameState.ChangeState(GameStates.SpawningNext);
+        }
+
+        private void StateWaitingForInput()
+        {
+            _gameplayManager.GameState.ChangeState(GameStates.WaitingForInput);  
+        }
+
+        private void OnGameStateChange()
+        {
+            switch (_gameplayManager.GameState.CurrentState)
+            {
+                case GameStates.SpawningNext:
+                    SpawnCube();
+                    StateWaitingForInput();
+                    break;
+            }
+        }
+        #endregion
+
+        private void Update()
+        {
+            if (_shootingCube == null || !InputManager.IsDragging) return;
+
+            float targetX = Mathf.Clamp(InputManager.DragWorldPosition.x, -_maxX, _maxX);
+            Vector3 current = _shootingCube.transform.position;
+            Vector3 target = new Vector3(targetX, current.y, current.z);
+
+            _shootingCube.transform.position = Vector3.Lerp(current, target, Time.deltaTime * _moveSpeed);
+        }
+
         private void OnEnable()
         {
-            InputManager.OnSwipe += HandleSwipe;
+            InputManager.OnTap += OnInputTap;
         }
 
         private void OnDisable()
         {
-            InputManager.OnSwipe -= HandleSwipe;
+            InputManager.OnTap -= OnInputTap;
+            _gameplayManager.GameState.OnStateChange -= OnGameStateChange;
         }
+        
     }
 }

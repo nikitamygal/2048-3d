@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3452f7a3216dd4a90ad4f2d55c366599, type: 3}
+  m_Name: Cube Spawn Settings
+  m_EditorClassIdentifier: 
+  Spawns:
+  - Item: {fileID: 11400000, guid: 7bfe0bde5196642cc83ba492d6e760dd, type: 2}
+    Percentage: 75
+  - Item: {fileID: 11400000, guid: 55b49ca6c59024e998b182f3290a444e, type: 2}
+    Percentage: 25

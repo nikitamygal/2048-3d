@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using MoreMountains.Feedbacks;
 using MoreMountains.Tools;
 using SoloGames.Configs;
 using SoloGames.Gameplay;
@@ -9,18 +12,22 @@ namespace SoloGames.Managers
 {
     public class MergeManager : MMSingleton<MergeManager>
     {
-        [SerializeField] private Cube cubePrefab;
-        // [SerializeField] private CubePool cubePool;
+        [SerializeField] private MMF_Player _mergeFeedbackPlayer;
+        [SerializeField] private MMFeedbacks _mergeFeedbacks;
 
-        private readonly HashSet<Cube> lockedCubes = new();
+        public static event Action<CubeItemSO> OnMerge;
+        
+        protected SpawnManager _spawnManager => SpawnManager.Instance;
+        protected float _mergeDelay = 0.1f;
+        private readonly HashSet<Cube> _lockedCubes = new();
 
         public void TryMerge(Cube a, Cube b)
         {
-            if (a == b || lockedCubes.Contains(a) || lockedCubes.Contains(b)) return;
+            if (a == b || _lockedCubes.Contains(a) || _lockedCubes.Contains(b)) return;
             if (a.Config.Number != b.Config.Number) return;
 
-            lockedCubes.Add(a);
-            lockedCubes.Add(b);
+            _lockedCubes.Add(a);
+            _lockedCubes.Add(b);
 
             a.PrepareForMerge();
             b.PrepareForMerge();
@@ -34,27 +41,44 @@ namespace SoloGames.Managers
 
             if (a == null || b == null) yield break;
 
-            a.MergeWith(b);
+            MergeCubes(a, b);
 
-            lockedCubes.Remove(a);
-            lockedCubes.Remove(b);
+            _lockedCubes.Remove(a);
+            _lockedCubes.Remove(b);
         }
 
-        public void SpawnMergedCube(int value, Vector3 position)
+        public void MergeCubes(Cube a, Cube b)
         {
-            // Cube newCube = cubePool.GetCube(value);
-            // newCube.transform.position = position + Vector3.up * 0.2f;
-            // newCube.SetValue(value);
+            int newValue = a.Config.GetNumber() * 2;
+            Cube newCube = _spawnManager.SpawnNewCube(newValue, b.transform.position);
+            _spawnManager.DespawnPoolObject(a);
+            _spawnManager.DespawnPoolObject(b);
 
-            // Rigidbody rb = newCube.GetComponent<Rigidbody>();
-            // rb.linearVelocity = Vector3.zero;
-            // rb.angularVelocity = Vector3.zero;
+            // Play merge feedbacks
+            AssignParticlesTarget(newCube.Config.MergeVFX);
+            PlayMergeFeedbacks(newCube.transform.position);
+
+            // Finilize merge - jump
+            newCube.FinalizeMerge();
+            OnMerge?.Invoke(newCube.Config);
         }
 
-        // public void DestroyCube(Cube cube)
-        // {
-        //     cubePool.ReturnCube(cube);
-        // }
+        private void AssignParticlesTarget(ParticleSystem particleSystem)
+        {
+            MMF_Feedback particlesFeedback = _mergeFeedbackPlayer.FeedbacksList.FirstOrDefault(f => f is MMF_ParticlesInstantiation);
+            MMF_ParticlesInstantiation mmfParticles = particlesFeedback as MMF_ParticlesInstantiation;
+
+            if (mmfParticles != null)
+            {
+                mmfParticles.ParticlesPrefab = particleSystem;
+            }
+        }
+
+        private void PlayMergeFeedbacks(Vector3 position)
+        {
+            _mergeFeedbacks?.PlayFeedbacks(position);
+        }
+
     }
 }
 

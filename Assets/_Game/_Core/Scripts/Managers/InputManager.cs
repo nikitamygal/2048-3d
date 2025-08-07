@@ -1,37 +1,35 @@
 using System;
-using MoreMountains.Tools;
 using UnityEngine;
+
 
 namespace SoloGames.Managers
 {
-    public class InputManager : MMSingleton<InputManager>
+    public class InputManager : MonoBehaviour
     {
-        [SerializeField] private float _swipeThreshold = 25f;
+        public static event Action<bool> OnTap;
+        public static bool IsDragging { get; private set; } = false;
+        public static Vector3 DragWorldPosition { get; private set; }
 
-        public bool IsSwiping => _isSwiping;
-        public static event Action<Vector2> OnSwipe;      // swipe direction (normalized)
-        public static event Action OnTap;                // simple tap/click
-
-        private Vector2 _startTouchPosition;
-        private Vector2 currentTouchPosition;
-        protected bool _isSwiping = false;
-        protected bool _isMobileDevice = false;
+        private bool _isSwiping = false;
+        private bool _isMobileDevice = false;
 
         private void HandleMouseInput()
         {
             if (Input.GetMouseButtonDown(0))
             {
                 _isSwiping = true;
-                _startTouchPosition = Input.mousePosition;
+                IsDragging = true;
+                DetectTap(false);
             }
             else if (Input.GetMouseButton(0) && _isSwiping)
             {
-                currentTouchPosition = Input.mousePosition;
-                DetectSwipe();
+                UpdateDragPosition(Input.mousePosition);
             }
             else if (Input.GetMouseButtonUp(0))
             {
                 _isSwiping = false;
+                IsDragging = false;
+                DetectTap(true);
             }
         }
 
@@ -44,31 +42,38 @@ namespace SoloGames.Managers
             {
                 case TouchPhase.Began:
                     _isSwiping = true;
-                    _startTouchPosition = touch.position;
+                    IsDragging = true;
+                    DetectTap(false);
                     break;
 
                 case TouchPhase.Moved:
                 case TouchPhase.Stationary:
-                    currentTouchPosition = touch.position;
-                    DetectSwipe();
+                    UpdateDragPosition(touch.position);
                     break;
 
                 case TouchPhase.Ended:
                 case TouchPhase.Canceled:
                     _isSwiping = false;
+                    IsDragging = false;
+                    DetectTap(true);
                     break;
             }
         }
-        
-        private void DetectSwipe()
+
+        private void UpdateDragPosition(Vector2 screenPos)
         {
-            Vector2 delta = currentTouchPosition - _startTouchPosition;
-            if (delta.magnitude >= _swipeThreshold)
+            Ray ray = Camera.main.ScreenPointToRay(screenPos);
+            Plane plane = new Plane(Vector3.up, Vector3.zero);
+
+            if (plane.Raycast(ray, out float distance))
             {
-                Vector2 direction = delta.normalized;
-                OnSwipe?.Invoke(direction);
-                _isSwiping = false; // reset swipe
+                DragWorldPosition = ray.GetPoint(distance);
             }
+        }
+
+        private void DetectTap(bool isUp)
+        {
+            OnTap?.Invoke(isUp);
         }
 
         private void Update()

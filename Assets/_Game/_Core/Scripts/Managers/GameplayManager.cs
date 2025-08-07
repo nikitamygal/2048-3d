@@ -1,56 +1,50 @@
 using MoreMountains.Tools;
-using SoloGames.UI;
+using UnityEngine;
 
 
 namespace SoloGames.Managers
 {
-    public enum GameStates { Start, Win, Lose }
+    public enum GameStates {
+        Start,
+        WaitingForInput,
+        ShootingCube,
+        SpawningNext,
+        Win,
+        Lose
+    }
 
     public class GameplayManager : MMSingleton<GameplayManager>
     {
         public MMStateMachine<GameStates> GameState;
 
         protected GUIManager _guiManager => GUIManager.Instance;
-        protected UIPanel _hudPanel;
-        protected UIPanel _winPanel;
-        protected UIPanel _losePanel;
 
         protected override void Awake()
         {
             base.Awake();
-            Initialization();
+            PreInitialization();
         }
 
-        protected void Initialization()
+        protected void PreInitialization()
         {
             GameState = new MMStateMachine<GameStates>(gameObject, true);
-            _hudPanel = _guiManager.GetPanel(UIPanelType.HUD);
-            _winPanel = _guiManager.GetPanel(UIPanelType.Win);
-            _losePanel = _guiManager.GetPanel(UIPanelType.Lose);
-        }
-
-        protected void OnStartState()
-        {
-
         }
 
         protected void OnWinState()
         {
-            _winPanel?.Show();
+            _guiManager?.WinPanel?.Show();
         }
-        
+
         protected void OnLoseState()
         {
-            _losePanel?.Show();
+            _guiManager?.LosePanel.Show();
         }
 
         private void OnStateChange()
         {
+            Debug.Log($"GameState: {GameState.CurrentState}");
             switch (GameState.CurrentState)
             {
-                case GameStates.Start:
-                    OnStartState();
-                    break;
                 case GameStates.Win:
                     OnWinState();
                     break;
