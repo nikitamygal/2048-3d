@@ -16,7 +16,7 @@ namespace SoloGames.Managers
         [SerializeField] private MMFeedbacks _mergeFeedbacks;
 
         public static event Action<CubeItemSO> OnMerge;
-        
+
         protected SpawnManager _spawnManager => SpawnManager.Instance;
         protected float _mergeDelay = 0.1f;
         private readonly HashSet<Cube> _lockedCubes = new();
@@ -55,11 +55,12 @@ namespace SoloGames.Managers
             _spawnManager.DespawnPoolObject(b);
 
             // Play merge feedbacks
-            AssignParticlesTarget(newCube.Config.MergeVFX);
             PlayMergeFeedbacks(newCube.transform.position);
 
             // Finilize merge - jump
             newCube.FinalizeMerge();
+            newCube.Jump();
+
             OnMerge?.Invoke(newCube.Config);
         }
 

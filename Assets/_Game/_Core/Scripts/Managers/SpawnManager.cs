@@ -30,7 +30,6 @@ namespace SoloGames.Managers
             Cube newCube = newCubeObject.GetComponent<Cube>();
             newCube.transform.position = position;
             newCube.Init(config, true);
-            newCube.FreezeRotation(true);
             newCube.gameObject.SetActive(true);
 
             return newCube;

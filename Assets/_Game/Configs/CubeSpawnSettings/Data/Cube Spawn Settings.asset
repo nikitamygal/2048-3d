@@ -17,3 +17,5 @@ MonoBehaviour:
     Percentage: 75
   - Item: {fileID: 11400000, guid: 55b49ca6c59024e998b182f3290a444e, type: 2}
     Percentage: 25
+  - Item: {fileID: 11400000, guid: e09be0c20c5bb4d5d9be52f5e40eb976, type: 2}
+    Percentage: 10

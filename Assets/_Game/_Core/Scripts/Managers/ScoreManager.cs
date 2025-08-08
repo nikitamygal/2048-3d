@@ -1,5 +1,6 @@
 using System;
 using MoreMountains.Tools;
+using SoloGames.Configs;
 
 namespace SoloGames.Managers
 {
@@ -21,7 +22,7 @@ namespace SoloGames.Managers
 
         public void Add(int value)
         {
-            _score += CalculateScores(value);
+            _score += value;
             OnScoreUpdated?.Invoke(_score);
         }
 
@@ -37,9 +38,28 @@ namespace SoloGames.Managers
             OnScoreUpdated?.Invoke(_score);
         }
 
-        private int CalculateScores(int value)
+        public int CalculateScores(int value)
         {
-            return value / 2;
+            return value / 4;
+        }
+
+        private void OnMergeCubes(CubeItemSO newCubeConfig)
+        {
+            if (newCubeConfig == null) return;
+
+            int newValue = newCubeConfig.GetNumber();
+            newValue = CalculateScores(newValue);
+            Add(newValue);
+        }
+
+        private void OnEnable()
+        {
+            MergeManager.OnMerge += OnMergeCubes;
+        }
+
+        private void OnDisable()
+        {
+            MergeManager.OnMerge -= OnMergeCubes;
         }
         
     }

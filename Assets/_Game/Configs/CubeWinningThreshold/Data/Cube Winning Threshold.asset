@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Cube Winning Threshold
   m_EditorClassIdentifier: 
   WinList:
+  - {fileID: 11400000, guid: 239eb7a84fcf04713b4f3348e66c6b95, type: 2}
+  - {fileID: 11400000, guid: 845ce258524a34ca28bbdf6337735a3b, type: 2}
   - {fileID: 11400000, guid: c171feff677e94742adcf80662b6ff53, type: 2}
   - {fileID: 11400000, guid: 7ee21fe0f55b6471bb4c58cb5315b7b3, type: 2}
   - {fileID: 11400000, guid: 9f09de8485a544632984fc0c5db0a9a8, type: 2}

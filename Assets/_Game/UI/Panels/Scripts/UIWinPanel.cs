@@ -1,6 +1,8 @@
 using System;
 using MoreMountains.Feedbacks;
 using SoloGames.Managers;
+using SoloGames.SaveLoad;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,10 +11,26 @@ namespace SoloGames.UI
 {
     public class UIWinPanel : UIPanel
     {
+        [Header("Bindings")]
+        [SerializeField] private TextMeshProUGUI _txtNewCube;
         [SerializeField] private Button _btnContinue;
+
+        [Header("Feedbacks")]
         [SerializeField] private MMFeedbacks _btnContinueFeedbacks;
 
         protected SceneLoader _sceneLoader => SceneLoader.Instance;
+        protected SaveLoadSystem _saveSystem => SaveLoadSystem.Instance;
+
+        private void Start()
+        {
+            SetTxtNewCube((int)_saveSystem.Data.MaxWinCubeValue);
+        }
+
+        private void SetTxtNewCube(int number)
+        {
+            if (_txtNewCube == null) return;
+            _txtNewCube.text = number.ToString();
+        }
 
         protected void OnContinue()
         {

@@ -42,7 +42,6 @@ namespace SoloGames.Managers
 
         private void OnStateChange()
         {
-            Debug.Log($"GameState: {GameState.CurrentState}");
             switch (GameState.CurrentState)
             {
                 case GameStates.Win:

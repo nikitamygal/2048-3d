@@ -150,6 +150,7 @@ MonoBehaviour:
   _cubeSpawnSettings: {fileID: 11400000, guid: fd9385af0384c491aabdabf48199a0b7, type: 2}
   _spawnPoint: {fileID: 7293408436094952862}
   _respawnDelay: 0.8
+  _moveSpeed: 70
   _maxX: 2.4
   _shootForce: 20
   _shootFeedbacks: {fileID: 1398696079870754270}
@@ -371,7 +372,7 @@ MonoBehaviour:
           ButtonText: Automatic Shaker Setup
         Owner: {fileID: 1398696079870754270}
         DebugActive: 0
-        Sfx: {fileID: 8300000, guid: fe0b1f9aeb45b41b089175aeeabd5d95, type: 3}
+        Sfx: {fileID: 8300000, guid: a684e584dd7e24256a7f3f7d885799c1, type: 3}
         RandomSfx: []
         TestPlayButton:
           ButtonText: Debug Play Sound

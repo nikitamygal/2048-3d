@@ -1,5 +1,6 @@
 public enum CubeNumberType
 {
+    none = 0,
     two = 2,
     four = 4,
     eight = 8,
