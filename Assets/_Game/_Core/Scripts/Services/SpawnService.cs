@@ -4,9 +4,9 @@ using SoloGames.Gameplay;
 using UnityEngine;
 
 
-namespace SoloGames.Managers
+namespace SoloGames.Services
 {
-    public class SpawnManager : MMSingleton<SpawnManager>
+    public class SpawnService : Service
     {
         [SerializeField] private CubeListSO _cubeList;
         [SerializeField] private Cube _cubePrefab;

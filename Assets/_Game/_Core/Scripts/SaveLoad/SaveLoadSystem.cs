@@ -1,11 +1,12 @@
 using System;
 using System.Reflection;
 using MoreMountains.Tools;
+using SoloGames.Services;
 
 
 namespace SoloGames.SaveLoad
 {
-    public class SaveLoadSystem : MMSingleton<SaveLoadSystem>
+    public class SaveLoadSystem : Service
     {
         public SaveData Data => _saveData;
 
@@ -15,13 +16,7 @@ namespace SoloGames.SaveLoad
         protected BindingFlags _bindingFlags = BindingFlags.Public | BindingFlags.Instance;
         private Type _saveDataType;
 
-        protected override void Awake()
-        {
-            base.Awake();
-            Initialization();
-        }
-
-        public void Initialization()
+        public override void Init()
         {
             LoadData();
             if (_saveData == null)

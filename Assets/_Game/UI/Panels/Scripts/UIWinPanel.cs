@@ -1,7 +1,4 @@
-using System;
 using MoreMountains.Feedbacks;
-using SoloGames.Managers;
-using SoloGames.SaveLoad;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,9 +14,6 @@ namespace SoloGames.UI
 
         [Header("Feedbacks")]
         [SerializeField] private MMFeedbacks _btnContinueFeedbacks;
-
-        protected SceneLoader _sceneLoader => SceneLoader.Instance;
-        protected SaveLoadSystem _saveSystem => SaveLoadSystem.Instance;
 
         private void Start()
         {

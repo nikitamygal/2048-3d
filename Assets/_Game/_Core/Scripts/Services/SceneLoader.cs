@@ -1,9 +1,9 @@
 using MoreMountains.Tools;
 using UnityEngine.SceneManagement;
 
-namespace SoloGames.Managers
+namespace SoloGames.Services
 {
-    public class SceneLoader : MMSingleton<SceneLoader>
+    public class SceneService : Service
     {
         public void LoadScene(string sceneName)
         {

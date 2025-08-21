@@ -1,4 +1,5 @@
 using SoloGames.Managers;
+using SoloGames.Patterns;
 using UnityEngine;
 
 
@@ -6,7 +7,12 @@ namespace SoloGames.Gameplay
 {
     public class LosingLine : MonoBehaviour
     {
-        private GameplayManager _gameplayManager => GameplayManager.Instance;
+        private GameplayManager _gameplayManager;
+
+        private void Awake()
+        {
+            _gameplayManager = ServiceLocator.Get<GameplayManager>();
+        }
 
         private void OnTriggerEnter(Collider other)
         {

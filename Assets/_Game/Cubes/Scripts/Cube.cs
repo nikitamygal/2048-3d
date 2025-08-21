@@ -2,6 +2,7 @@ using MoreMountains.Feedbacks;
 using MoreMountains.Tools;
 using SoloGames.Configs;
 using SoloGames.Managers;
+using SoloGames.Patterns;
 using Tiny;
 using TMPro;
 using UnityEngine;
@@ -31,7 +32,7 @@ namespace SoloGames.Gameplay
         public bool IsShootingCube { get; set; }
         public bool IsContolled { get; set; }
 
-        protected MergeManager _mergeManager => MergeManager.Instance;
+        protected MergeManager _mergeManager;
         protected Rigidbody _rigidbody;
         private bool _isMerging = false;
 
@@ -42,6 +43,7 @@ namespace SoloGames.Gameplay
 
         protected void PreInitialization()
         {
+            _mergeManager = ServiceLocator.Get<MergeManager>();
             _rigidbody = GetComponent<Rigidbody>();
         }
 

@@ -1,10 +1,12 @@
 using MoreMountains.Tools;
-using UnityEngine;
+using SoloGames.Patterns;
+using SoloGames.Services;
 
 
 namespace SoloGames.Managers
 {
-    public enum GameStates {
+    public enum GameStates
+    {
         Start,
         WaitingForInput,
         ShootingCube,
@@ -13,21 +15,20 @@ namespace SoloGames.Managers
         Lose
     }
 
-    public class GameplayManager : MMSingleton<GameplayManager>
+    public class GameplayManager : Service
     {
         public MMStateMachine<GameStates> GameState;
 
-        protected GUIManager _guiManager => GUIManager.Instance;
+        protected GUIManager _guiManager;
 
-        protected override void Awake()
-        {
-            base.Awake();
-            PreInitialization();
-        }
-
-        protected void PreInitialization()
+        void Awake()
         {
             GameState = new MMStateMachine<GameStates>(gameObject, true);
+        }
+
+        public override void Init()
+        {
+            _guiManager = ServiceLocator.Get<GUIManager>();
         }
 
         protected void OnWinState()

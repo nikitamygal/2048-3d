@@ -1,17 +1,25 @@
 using SoloGames.Configs;
+using SoloGames.Patterns;
 using SoloGames.SaveLoad;
+using SoloGames.Services;
 using UnityEngine;
 
 
 namespace SoloGames.Managers
 {
-    public class WinManager : MonoBehaviour
+    public class WinManager : Service
     {
         [SerializeField] private CubeWinningThreshold _winningThreshold;
 
-        protected GameplayManager _gameplayManager => GameplayManager.Instance;
-        protected SaveLoadSystem _saveSystem => SaveLoadSystem.Instance;
+        protected GameplayManager _gameplayManager;
+        protected SaveLoadSystem _saveSystem;
         protected CubeItemSO _nextItemThreshold = null;
+
+        public override void Init()
+        {
+            _gameplayManager = ServiceLocator.Get<GameplayManager>();
+            _saveSystem = ServiceLocator.Get<SaveLoadSystem>();
+        }
 
         private void Start()
         {

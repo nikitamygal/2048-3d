@@ -2,9 +2,9 @@ using System;
 using UnityEngine;
 
 
-namespace SoloGames.Managers
+namespace SoloGames.Services
 {
-    public class InputManager : MonoBehaviour
+    public class InputService : MonoBehaviour
     {
         public static event Action<bool> OnTap;
         public static bool IsDragging { get; private set; } = false;

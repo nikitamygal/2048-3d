@@ -1,11 +1,13 @@
 using MoreMountains.Feedbacks;
 using SoloGames.Configs;
 using SoloGames.Managers;
+using SoloGames.Patterns;
+using SoloGames.Services;
 using UnityEngine;
 
 namespace SoloGames.Gameplay
 {
-    public class CubeShooter : MonoBehaviour
+    public class CubeShooter : Service
     {
         [Header("Settings")]
         [SerializeField] private CubeSpawnSettingsSO _cubeSpawnSettings;
@@ -20,9 +22,15 @@ namespace SoloGames.Gameplay
 
         protected Cube _shootingCube = null;
         protected Vector3 _cubePosition => _shootingCube.transform.position;
-        protected GameplayManager _gameplayManager => GameplayManager.Instance;
-        protected SpawnManager _spawnManager => SpawnManager.Instance;
+        protected GameplayManager _gameplayManager;
+        protected SpawnService _spawnService;
         private bool _canShoot = true;
+
+        public override void Init()
+        {
+            _gameplayManager = ServiceLocator.Get<GameplayManager>();
+            _spawnService = ServiceLocator.Get<SpawnService>();
+        }
 
         private void Start()
         {
@@ -58,7 +66,7 @@ namespace SoloGames.Gameplay
         private void SpawnCube()
         {
             CubeItemSO randomCube = _cubeSpawnSettings.GetRandomCube();
-            _shootingCube = _spawnManager.SpawnNewCube(randomCube, _spawnPoint.position);
+            _shootingCube = _spawnService.SpawnNewCube(randomCube, _spawnPoint.position);
             _shootingCube.FreezeRotation(true);
             _shootingCube.IsContolled = true;
         }
@@ -106,9 +114,9 @@ namespace SoloGames.Gameplay
 
         private void MoveCube()
         {
-            if (_shootingCube == null || !InputManager.IsDragging) return;
+            if (_shootingCube == null || !InputService.IsDragging) return;
 
-            float targetX = Mathf.Clamp(InputManager.DragWorldPosition.x, -_maxX, _maxX);
+            float targetX = Mathf.Clamp(InputService.DragWorldPosition.x, -_maxX, _maxX);
             Vector3 current = _shootingCube.transform.position;
             Vector3 target = new Vector3(targetX, current.y, current.z);
 
@@ -126,12 +134,12 @@ namespace SoloGames.Gameplay
 
         private void OnEnable()
         {
-            InputManager.OnTap += OnInputTap;
+            InputService.OnTap += OnInputTap;
         }
 
         private void OnDisable()
         {
-            InputManager.OnTap -= OnInputTap;
+            InputService.OnTap -= OnInputTap;
             _gameplayManager.GameState.OnStateChange -= OnGameStateChange;
         }
         

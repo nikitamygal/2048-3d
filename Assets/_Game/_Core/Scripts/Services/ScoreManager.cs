@@ -1,10 +1,10 @@
 using System;
-using MoreMountains.Tools;
 using SoloGames.Configs;
+using SoloGames.Services;
 
 namespace SoloGames.Managers
 {
-    public class ScoreManager : MMSingleton<ScoreManager>
+    public class ScoreManager : Service
     {
         public static event Action<int> OnScoreUpdated;
 
